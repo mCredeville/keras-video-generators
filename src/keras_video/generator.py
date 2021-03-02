@@ -246,7 +246,7 @@ class VideoFrameGenerator(Sequence):
             if np.random.random() < self.apply_deformation:
                 np.random.seed(seedN)
                 displacement = np.random.randn(2, self.controlPoints1, self.controlPoints2) * self.elasticDeformationScale
-                converted_img = elasticdeform.deform_grid(image, displacement,axis=(0, 1))
+                converted_img = elasticdeform.deform_grid(image, displacement,axis=(0, 1), mode = 'nearest')
             else:
                 converted_img = image
         else:

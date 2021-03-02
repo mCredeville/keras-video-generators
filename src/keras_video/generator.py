@@ -251,7 +251,7 @@ class VideoFrameGenerator(Sequence):
                 converted_img = image
         else:
             converted_img=image
-            print('converted_img.shape: ',converted_img.shape)
+            #print('converted_img.shape: ',converted_img.shape)
         return converted_img
     
     def noiseAdd(self, seedM, image):

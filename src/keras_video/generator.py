@@ -77,6 +77,7 @@ class VideoFrameGenerator(Sequence):
    
             noiseAdd=False,
             noiseAddScale=1,
+            apply_no=1,
             #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~        
             *args,
             **kwargs):
@@ -152,6 +153,10 @@ class VideoFrameGenerator(Sequence):
         self.noiseAddition=noiseAdd
         self.noiseAdditionScale=noiseAddScale
         self.seedM=0
+        self.apply_noise=apply_no
+        
+        self.seedn=0
+        self.seedm=0
 
         #~~~~~~~~~~~~~~~~~~~~~~~~
         
@@ -243,6 +248,7 @@ class VideoFrameGenerator(Sequence):
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     def elDeform(self,seedN,image):
         if self.elasticDeformation==True:
+            np.random.seed(seedn)
             if np.random.random() < self.apply_deformation:
                 np.random.seed(seedN)
                 displacement = np.random.randn(2, self.controlPoints1, self.controlPoints2) * self.elasticDeformationScale
@@ -256,8 +262,12 @@ class VideoFrameGenerator(Sequence):
     
     def noiseAdd(self, seedM, image):
         if self.noiseAddition==True:
-            np.random.seed(seedM)
-            noised_img= image + self.noiseAdditionScale * image.std() * np.random.random(image.shape)
+            np.random.seed(seedm)
+            if np.random.random() < self.apply_noise:
+                np.random.seed(seedM)
+                noised_img= image + self.noiseAdditionScale * image.std() * np.random.random(image.shape)
+            else:
+                noised_img=image
         else:
             noised_img=image
         return noised_img
@@ -354,9 +364,13 @@ class VideoFrameGenerator(Sequence):
         #be called so that the random function produces a specific result, the same for all frames.
         self.seedN=[]
         self.seedM=[]
+        self.seedn=[]
+        self.seedm=[]
         for _ in range(self.files_count):
             self.seedN.append(np.random.randint(2**32))
             self.seedM.append(np.random.randint(2**32))
+            self.seedn.append(np.random.randint(2**32))
+            self.seedm.append(np.random.randint(2**32))
         #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
         if self.transformation is not None:
@@ -401,6 +415,8 @@ class VideoFrameGenerator(Sequence):
             #if self.elasticDeformation is True:
             seedN=self.seedN[i]
             seedM=self.seedM[i]
+            seedn=self.seedn[i]
+            seedm=self.seedm[i]
             #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
             
             video = self.files[i]

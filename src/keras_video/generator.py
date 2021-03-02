@@ -71,8 +71,8 @@ class VideoFrameGenerator(Sequence):
             #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
             elasticDef=False,
             elasticDefScale=25,
-            elasticDefControlPoints1=10,
-            elasticDefControlPoints2=10,
+            elasticDefControlPoints1=20,
+            elasticDefControlPoints2=20,
             apply_def=1, #probabilty for the elastic deformation to be applied
    
             noiseAdd=False,

@@ -490,10 +490,10 @@ class VideoFrameGenerator(Sequence):
             frame_i += 1
             if frame_i == 1 or frame_i % frame_step == 0 or frame_i == orig_total:
                 # resize
-                print('type(frame) before converting to np: ',type(frame))
-                print('frame.shape before resizing: ',frame.shape)
+                #print('type(frame) before converting to np: ',type(frame))
+                #print('frame.shape before resizing: ',frame.shape)
                 frame = cv.resize(frame, shape)
-                print('frame.shape after resizing with',shape,': ',frame.shape)
+                #print('frame.shape after resizing with',shape,': ',frame.shape)
                 
                 # use RGB or Grayscale ?
                 if self.nb_channel == 3:
@@ -503,8 +503,8 @@ class VideoFrameGenerator(Sequence):
 
                 # to np
                 frame = img_to_array(frame) * self.rescale
-                print('final type(frame): ',type(frame))
-                print('frame.shape: ',frame.shape)
+                #print('final type(frame): ',type(frame))
+                #print('frame.shape: ',frame.shape)
                 # keep frame
                 frames.append(frame)
 

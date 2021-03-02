@@ -75,6 +75,8 @@ class VideoFrameGenerator(Sequence):
             elasticDefControlPoints2=3,
             apply_def=1, #probabilty for the elastic deformation to be applied
         
+            noiseAdd=False,
+            noiseAddScale=1
             #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~        
             *args,
             **kwargs):
@@ -146,6 +148,11 @@ class VideoFrameGenerator(Sequence):
         self.controlPoints2=elasticDefControlPoints2
         self.seedN=0
         self.apply_deformation=apply_def
+        
+        self.noiseAddition=noiseAdd
+        self.noiseAdditionScale=noiseAddScale
+        self.seedM=0
+
         #~~~~~~~~~~~~~~~~~~~~~~~~
         
         _validation_data = kwargs.get('_validation_data', None)
@@ -246,6 +253,16 @@ class VideoFrameGenerator(Sequence):
             converted_img=image
             print('converted_img.shape: ',converted_img.shape)
         return converted_img
+    
+    def noiseAdd(self, seedM, image):
+        if self.noiseAddition==True:
+            np.random.seed(seedM)
+            noised_img= image + self.noiseAdditionScale * image.std() * np.random.random(image.shape)
+        else:
+            noised_img=image
+        return noised_img
+
+    
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     
     def count_frames(self, cap, name, force_no_headers=False):
@@ -336,8 +353,10 @@ class VideoFrameGenerator(Sequence):
         #Setting a specific random seed for each video (between 0 and 2**32-1). When processing frames from that video, this seed will
         #be called so that the random function produces a specific result, the same for all frames.
         self.seedN=[]
+        self.seedM=[]
         for _ in range(self.files_count):
             self.seedN.append(np.random.randint(2**32))
+            self.seedM.append(np.random.randint(2**32))
         #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
         if self.transformation is not None:
@@ -381,6 +400,7 @@ class VideoFrameGenerator(Sequence):
             #Prepare a random Seed (defined previously) for the elastic deformation of the current video
             #if self.elasticDeformation is True:
             seedN=self.seedN[i]
+            seedM=self.seedM[i]
             #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
             
             video = self.files[i]

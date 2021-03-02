@@ -145,6 +145,7 @@ class VideoFrameGenerator(Sequence):
         self.controlPoints1=elasticDefControlPoints1
         self.controlPoints2=elasticDefControlPoints2
         self.seedN=0
+        self.apply_deformation=apply_def
         #~~~~~~~~~~~~~~~~~~~~~~~~
         
         _validation_data = kwargs.get('_validation_data', None)
@@ -235,7 +236,7 @@ class VideoFrameGenerator(Sequence):
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     def elDeform(self,seedN,image):
         if self.elasticDeformation==True:
-            if np.random.random() < apply_def:
+            if np.random.random() < self.apply_deformation:
                 np.random.seed(seedN)
                 displacement = np.random.randn(2, self.controlPoints1, self.controlPoints2) * self.elasticDeformationScale
                 converted_img = elasticdeform.deform_grid(image, displacement,axis=(0, 1))

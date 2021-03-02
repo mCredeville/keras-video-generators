@@ -73,6 +73,8 @@ class VideoFrameGenerator(Sequence):
             elasticDefScale=25,
             elasticDefControlPoints1=3,
             elasticDefControlPoints2=3,
+            apply_def=1, #probabilty for the elastic deformation to be applied
+        
             #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~        
             *args,
             **kwargs):
@@ -233,10 +235,12 @@ class VideoFrameGenerator(Sequence):
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     def elDeform(self,seedN,image):
         if self.elasticDeformation==True:
-            np.random.seed(seedN)
-            
-            displacement = np.random.randn(2, self.controlPoints1, self.controlPoints2) * self.elasticDeformationScale
-            converted_img = elasticdeform.deform_grid(image, displacement,axis=(0, 1))
+            if np.random.random() < apply_def:
+                np.random.seed(seedN)
+                displacement = np.random.randn(2, self.controlPoints1, self.controlPoints2) * self.elasticDeformationScale
+                converted_img = elasticdeform.deform_grid(image, displacement,axis=(0, 1))
+            else:
+                converted_img = image
         else:
             converted_img=image
             print('converted_img.shape: ',converted_img.shape)

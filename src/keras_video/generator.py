@@ -246,7 +246,7 @@ class VideoFrameGenerator(Sequence):
             kind))
 
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    def elDeform(self,seedN,image):
+    def elDeform(self,seedN, seedn, image):
         if self.elasticDeformation==True:
             np.random.seed(seedn)
             if np.random.random() < self.apply_deformation:
@@ -260,7 +260,7 @@ class VideoFrameGenerator(Sequence):
             #print('converted_img.shape: ',converted_img.shape)
         return converted_img
     
-    def noiseAdd(self, seedM, image):
+    def noiseAdd(self, seedM, seedm, image):
         if self.noiseAddition==True:
             np.random.seed(seedm)
             if np.random.random() < self.apply_noise:
@@ -449,7 +449,7 @@ class VideoFrameGenerator(Sequence):
                 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
                 #Included as an extra: the self.elDeform function using seedN, applied to the each frame
                 #just after standarization
-                frames = [self.transformation.apply_transform(self.noiseAdd(seedM, self.elDeform(seedN,
+                frames = [self.transformation.apply_transform(self.noiseAdd(seedM, seedm, self.elDeform(seedN, seedn,
                     self.transformation.standardize(frame)), transformation)) for frame in frames]
 
                 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

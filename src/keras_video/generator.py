@@ -435,6 +435,8 @@ class VideoFrameGenerator(Sequence):
                 #just after standarization
                 frames = [self.transformation.apply_transform(self.elDeform(seedN,
                     self.transformation.standardize(frame)), transformation) for frame in frames]
+                frames = [self.transformation.apply_transform(self.noiseAdd(seedM,
+                    self.transformation.standardize(frame)), transformation) for frame in frames]
                 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
                 
             # add the sequence in batch

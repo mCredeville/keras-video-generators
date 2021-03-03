@@ -450,7 +450,7 @@ class VideoFrameGenerator(Sequence):
                 #Included as an extra: the self.elDeform function using seedN, applied to the each frame
                 #just after standarization
                 frames = [self.transformation.apply_transform(self.noiseAdd(seedM, seedm, self.elDeform(seedN, seedn,
-                    self.transformation.standardize(frame)), transformation)) for frame in frames]
+                    self.transformation.standardize(frame))), transformation) for frame in frames]
 
                 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
                 

@@ -66,7 +66,7 @@ class VideoFrameGenerator(Sequence):
             split_test: float = None,
             split_val: float = None,
             nb_channel: int = 3,
-            glob_pattern: str = './videos/{classname}/*.avi',
+            glob_pattern: str = './videos/{classname}/*.tif',
             use_headers: bool = True,
             #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
             elasticDef=False,

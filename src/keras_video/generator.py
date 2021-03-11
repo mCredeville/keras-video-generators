@@ -292,22 +292,23 @@ class VideoFrameGenerator(Sequence):
         if not force_no_headers and name in self._framecounters:
             return self._framecounters[name]
 
-        total = cap.get(cv.CAP_PROP_FRAME_COUNT)
+        #total = cap.get(cv.CAP_PROP_FRAME_COUNT)
+        total=len(cap)
 
-        if force_no_headers or total < 0:
-            # headers not ok
-            total = 0
-            # TODO: we're unable to use CAP_PROP_POS_FRAME here
-            # so we open a new capture to not change the
-            # pointer position of "cap"
-            c = cv.VideoCapture(name)
-            #_,c = cv.imreadmulti(name, [], cv.IMREAD_ANYDEPTH)
-            while True:
-                grabbed, frame = c.read()
-                if not grabbed:
-                    rewind and stop
-                    break
-                total += 1
+        #if force_no_headers or total < 0:
+        #    # headers not ok
+        #    total = 0
+        #    # TODO: we're unable to use CAP_PROP_POS_FRAME here
+        #    # so we open a new capture to not change the
+        #    # pointer position of "cap"
+        #    c = cv.VideoCapture(name)
+        #    _,c = cv.imreadmulti(name, [], cv.IMREAD_ANYCOLOR)
+        #    while True:
+        #        grabbed, frame = c.read()
+        #        if not grabbed:
+        #            rewind and stop
+        #            break
+        #        total += 1
 
         # keep the result
         self._framecounters[name] = total
@@ -492,9 +493,9 @@ class VideoFrameGenerator(Sequence):
         return classname
 
     def _get_frames(self, video, nbframe, shape, force_no_headers=False):
-        cap = cv.VideoCapture(video)
-        #_,cap = cv.imreadmulti(video, [], cv.IMREAD_ANYDEPTH)
-        
+        #cap = cv.VideoCapture(video)
+        _,cap = cv.imreadmulti(video, [], cv.IMREAD_ANYCOLOR)
+        cap=np.array(cap)
         #print(type(cap))
         #print(cap.shape)
         
@@ -510,7 +511,10 @@ class VideoFrameGenerator(Sequence):
         frame_i = 0
 
         while True:
-            grabbed, frame = cap.read()
+            #grabbed, frame = cap.read()
+            grabbed=True
+            frame=cap[frame_i]
+            
             if not grabbed:
                 break
 
@@ -522,14 +526,17 @@ class VideoFrameGenerator(Sequence):
                 frame = cv.resize(frame, shape)
                 #print('frame.shape after resizing with',shape,': ',frame.shape)
                 
+                frame=np.flip(frame,2)
+                
                 # use RGB or Grayscale ?
-                if self.nb_channel == 3:
-                    frame = cv.cvtColor(frame, cv.COLOR_BGR2RGB)
-                else:
-                    frame = cv.cvtColor(frame, cv.COLOR_RGB2GRAY)
+                #if self.nb_channel == 3:
+                #    frame = cv.cvtColor(frame, cv.COLOR_BGR2RGB)
+                #else:
+                #    frame = cv.cvtColor(frame, cv.COLOR_RGB2GRAY)
 
                 # to np
-                frame = img_to_array(frame) * self.rescale
+                #frame = img_to_array(frame) * self.rescale
+                frame = frame * self.rescale
                 #print('final type(frame): ',type(frame))
                 #print('frame.shape: ',frame.shape)
                 # keep frame
@@ -538,7 +545,7 @@ class VideoFrameGenerator(Sequence):
             if len(frames) == nbframe:
                 break
 
-        cap.release()
+        #cap.release()
 
         if not force_no_headers and len(frames) != nbframe:
             # There is a problem here
